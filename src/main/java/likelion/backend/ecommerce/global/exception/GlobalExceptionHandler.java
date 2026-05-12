@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Void>> handleValidationException(MethodArgumentNotValidException e){
         return ResponseEntity
-                .status(HttpStatus.NOT_ACCEPTABLE)
+                .status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.error(
                         e.getBindingResult().getAllErrors().get(0).getDefaultMessage(),
                         null));
