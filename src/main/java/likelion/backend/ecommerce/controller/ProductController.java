@@ -1,7 +1,13 @@
 package likelion.backend.ecommerce.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
+import likelion.backend.ecommerce.dto.ProductCreateDTO;
+import likelion.backend.ecommerce.dto.ProductResponseDTO;
 import likelion.backend.ecommerce.entity.Product;
+import likelion.backend.ecommerce.global.api.ApiResponse;
+import likelion.backend.ecommerce.service.ProductService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,15 +15,25 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/products")
 public class ProductController {
+    private final ProductService productService;
+
     @Operation(
             summary = "상품 추가",
             description = "상품 추가"
     )
     @PostMapping
-    public ResponseEntity<Product> postProduct(@RequestBody Product product){
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<ApiResponse<ProductResponseDTO>> postProduct(
+            @Valid @RequestBody ProductCreateDTO productCreateDTO){
+        ProductResponseDTO saveProduct = productService.addProduct(productCreateDTO);
+
+        return new ResponseEntity<>(
+                ApiResponse.success(
+                        "성공적으로 상품을 등록하였습니다.",
+                        saveProduct),
+                HttpStatus.CREATED);
     }
 
     @Operation(
