@@ -84,9 +84,12 @@ public class ProductService {
         return new ProductResponseDTO(product);
     }
 
-    public ResponseEntity<Product> deleteProductById(Long productId){
-        return (productRepository.findById(productId).equals(Optional.empty())) ?
-                new ResponseEntity<>(HttpStatus.NO_CONTENT) :
-                new ResponseEntity<>(productRepository.deleteById(productId), HttpStatus.OK);
+    public ProductResponseDTO deleteProductById(Long productId){
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new NotFoundException(productId + "에 해당되는 상품을 찾을 수 없습니다."));
+
+        productRepository.deleteById(productId);
+
+        return new ProductResponseDTO(product);
     }
 }
