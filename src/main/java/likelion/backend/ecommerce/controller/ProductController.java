@@ -2,14 +2,13 @@ package likelion.backend.ecommerce.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import likelion.backend.ecommerce.dto.ProductCreateDTO;
-import likelion.backend.ecommerce.dto.ProductResponseDTO;
+import likelion.backend.ecommerce.dto.product.ProductCreateDTO;
+import likelion.backend.ecommerce.dto.product.ProductResponseDTO;
+import likelion.backend.ecommerce.dto.product.ProductUpdateDTO;
 import likelion.backend.ecommerce.entity.Product;
 import likelion.backend.ecommerce.global.api.ApiResponse;
-import likelion.backend.ecommerce.repository.ProductRepository;
 import likelion.backend.ecommerce.service.ProductService;
 import lombok.AllArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,12 +28,11 @@ public class ProductController {
     @PostMapping("/post")
     public ResponseEntity<ApiResponse<ProductResponseDTO>> postProduct(
             @Valid @RequestBody ProductCreateDTO productCreateDTO){
-        ProductResponseDTO saveProduct = productService.addProduct(productCreateDTO);
-
         return new ResponseEntity<>(
                 ApiResponse.success(
                         "성공적으로 상품을 등록하였습니다.",
-                        saveProduct),
+                        productService.addProduct(productCreateDTO)
+                ),
                 HttpStatus.CREATED);
     }
 
@@ -67,8 +65,12 @@ public class ProductController {
             description = "상품 ID를 통해 특정 상품 정보 수정"
     )
     @PatchMapping("/patch/{id}")
-    public ResponseEntity<Product> patchProduct(@PathVariable Long id, @RequestBody Product product){
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<ApiResponse<ProductResponseDTO>> patchProduct(
+            @PathVariable Long id, @Valid @RequestBody ProductUpdateDTO updateProduct){
+        return new ResponseEntity<>(ApiResponse.success(
+                id + "에 해당하는 상품의 정보를 수정하였습니다.",
+                productService.editProductById(id, updateProduct)
+        ), HttpStatus.OK);
     }
 
     @Operation(
