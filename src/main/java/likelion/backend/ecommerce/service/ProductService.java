@@ -6,12 +6,15 @@ import likelion.backend.ecommerce.dto.ProductResponseDTO;
 import likelion.backend.ecommerce.global.api.ApiResponse;
 import likelion.backend.ecommerce.global.exception.AlreadyExistException;
 import likelion.backend.ecommerce.global.exception.GlobalExceptionHandler;
+import likelion.backend.ecommerce.global.exception.NotFoundException;
 import likelion.backend.ecommerce.repository.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,17 +41,26 @@ public class ProductService {
         return new ProductResponseDTO(saveProduct);
     }
 
-    public ResponseEntity<Product> getAllProducts(){
-        return (productRepository.find)
+    public List<ProductResponseDTO> findAllProducts(){
+        List<Product> products = productRepository.findAll();
+
+        if(products.isEmpty()){
+            throw new NotFoundException("상품이 존재하지 않습니다.");
+        }
+
+        return products.stream()
+                .map(ProductResponseDTO::new)
+                .toList();
     }
 
-    public ResponseEntity<Product> findProductById(String productId){
-        return (productRepository.findById(productId).equals(Optional.empty())) ?
-                new ResponseEntity<>(HttpStatus.NO_CONTENT) :
-                new ResponseEntity<>(productRepository.findById(productId).get(), HttpStatus.OK);
+    public ProductResponseDTO findProductById(Long productId){
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new NotFoundException(productId + " : 해당 상품이 존재하지 않습니다."));
+
+        return new ProductResponseDTO(product);
     }
 
-    public ResponseEntity<Product> deleteProductById(String productId){
+    public ResponseEntity<Product> deleteProductById(Long productId){
         return (productRepository.findById(productId).equals(Optional.empty())) ?
                 new ResponseEntity<>(HttpStatus.NO_CONTENT) :
                 new ResponseEntity<>(productRepository.deleteById(productId), HttpStatus.OK);
