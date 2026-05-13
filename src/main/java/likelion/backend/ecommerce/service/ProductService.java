@@ -1,9 +1,10 @@
 package likelion.backend.ecommerce.service;
 
-import likelion.backend.ecommerce.dto.ProductCreateDTO;
+import jakarta.transaction.Transactional;
+import likelion.backend.ecommerce.dto.product.ProductCreateDTO;
+import likelion.backend.ecommerce.dto.product.ProductUpdateDTO;
 import likelion.backend.ecommerce.entity.Product;
-import likelion.backend.ecommerce.dto.ProductResponseDTO;
-import likelion.backend.ecommerce.global.api.ApiResponse;
+import likelion.backend.ecommerce.dto.product.ProductResponseDTO;
 import likelion.backend.ecommerce.global.exception.AlreadyExistException;
 import likelion.backend.ecommerce.global.exception.GlobalExceptionHandler;
 import likelion.backend.ecommerce.global.exception.NotFoundException;
@@ -13,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,6 +56,30 @@ public class ProductService {
     public ProductResponseDTO findProductById(Long productId){
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException(productId + " : 해당 상품이 존재하지 않습니다."));
+
+        return new ProductResponseDTO(product);
+    }
+
+    @Transactional
+    public ProductResponseDTO editProductById(Long productId, ProductUpdateDTO updateProduct){
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new NotFoundException(productId + " : 해당 상품이 존재하지 않습니다."));
+
+        if(updateProduct.getProductName() != null){
+            product.setProductName(updateProduct.getProductName());
+        }
+        if(updateProduct.getProductImage() != null){
+            product.setProductImage(updateProduct.getProductImage());
+        }
+        if(updateProduct.getDescription() != null){
+            product.setDescription(updateProduct.getDescription());
+        }
+        if(updateProduct.getPrice() != null){
+            product.setPrice(updateProduct.getPrice());
+        }
+        if(updateProduct.getQuantity() != null){
+            product.setQuantity(updateProduct.getQuantity());
+        }
 
         return new ProductResponseDTO(product);
     }

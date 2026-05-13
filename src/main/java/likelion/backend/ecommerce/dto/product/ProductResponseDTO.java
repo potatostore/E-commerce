@@ -1,4 +1,4 @@
-package likelion.backend.ecommerce.dto;
+package likelion.backend.ecommerce.dto.product;
 
 import likelion.backend.ecommerce.entity.Product;
 import likelion.backend.ecommerce.status.ProductStatus;
