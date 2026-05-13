@@ -9,6 +9,7 @@ import likelion.backend.ecommerce.entity.Product;
 import likelion.backend.ecommerce.global.api.ApiResponse;
 import likelion.backend.ecommerce.service.ProductService;
 import lombok.AllArgsConstructor;
+import org.hibernate.engine.spi.Status;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -77,8 +78,11 @@ public class ProductController {
             summary = "상품 삭제",
             description = "상품 ID를 통해 특정 상품 삭제"
     )
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Product> deleteProduct(@PathVariable Long id){
-        return new ResponseEntity<>(HttpStatus.OK);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ApiResponse<ProductResponseDTO>> deleteProduct(@PathVariable Long id){
+        return new ResponseEntity<>(ApiResponse.success(
+                id + " : 상품을 삭제하였습니다.",
+                productService.deleteProductById(id)
+        ), HttpStatus.OK);
     }
 }
