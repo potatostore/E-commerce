@@ -1,9 +1,9 @@
 package likelion.backend.ecommerce.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import likelion.backend.ecommerce.dto.cart.CartCreateDTO;
-import likelion.backend.ecommerce.dto.cart.CartDeleteDTO;
 import likelion.backend.ecommerce.dto.cart.cartItem.CartItemCreateDTO;
 import likelion.backend.ecommerce.dto.cart.CartResponseDTO;
 import likelion.backend.ecommerce.dto.cart.CartUpdateDTO;
@@ -101,12 +101,13 @@ public class CartController {
             summary = "장바구니 내 상품 삭제",
             description = "장바구니 내 특정 상품을 완전히 삭제"
     )
-    @DeleteMapping("/delete/{userId}")
+    @Transactional
+    @DeleteMapping("/delete/{userId}/{productId}")
     public ResponseEntity<ApiResponse<CartResponseDTO>> deleteCartItemInCart(
-            @PathVariable Long userId, @PathVariable CartDeleteDTO cartDeleteDTO){
+            @PathVariable Long userId, @PathVariable Long productId){
         return new ResponseEntity<>(ApiResponse.success(
-                userId + "의 장바구니 내 " + cartDeleteDTO.getProductId() + " 상품을 삭제하였습니다.",
-                cartService.deleteCart(userId, cartDeleteDTO)
+                userId + "의 장바구니 내 " +  productId + " 상품을 삭제하였습니다.",
+                cartService.deleteCart(userId, productId)
         ), HttpStatus.OK);
     }
 }

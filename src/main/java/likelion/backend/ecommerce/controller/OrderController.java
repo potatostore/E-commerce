@@ -26,10 +26,7 @@ public class OrderController {
     )
     @PostMapping("/post")
     public ResponseEntity<ApiResponse<OrderResponseDTO>> postOrder(@Valid @RequestBody OrderCreateDTO createOrder){
-        return new ResponseEntity<>(ApiResponse.success(
-                "주문을 성공적으로 생성하였습니다.",
-                OrderService
-        ))
+        return null;
     }
 
     @Operation(

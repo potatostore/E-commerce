@@ -2,18 +2,15 @@ package likelion.backend.ecommerce.service.cart;
 
 import jakarta.transaction.Transactional;
 import likelion.backend.ecommerce.dto.cart.CartCreateDTO;
-import likelion.backend.ecommerce.dto.cart.CartDeleteDTO;
 import likelion.backend.ecommerce.dto.cart.cartItem.CartItemCreateDTO;
 import likelion.backend.ecommerce.dto.cart.CartResponseDTO;
 import likelion.backend.ecommerce.dto.cart.CartUpdateDTO;
-import likelion.backend.ecommerce.dto.cart.cartItem.CartItemResponseDTO;
 import likelion.backend.ecommerce.entity.cart.Cart;
 import likelion.backend.ecommerce.entity.cart.CartItem;
 import likelion.backend.ecommerce.global.exception.AlreadyExistException;
 import likelion.backend.ecommerce.global.exception.NotFoundException;
 import likelion.backend.ecommerce.repository.cart.CartRepository;
 import lombok.AllArgsConstructor;
-import org.hibernate.annotations.NotFound;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -114,7 +111,7 @@ public class CartService {
         return new CartResponseDTO(cart);
     }
 
-    public CartResponseDTO deleteCart(Long userId, CartDeleteDTO cartDeleteDTO){
+    public CartResponseDTO deleteCart(Long userId, Long productId){
         if(!cartRepository.existsByUserId(userId)){
             throw new NotFoundException(userId + "에 해당하는 장바구니를 찾을 수 없습니다.");
         }
@@ -122,9 +119,9 @@ public class CartService {
         Cart cart = cartRepository.findByUserId(userId);
 
         CartItem targetItem = cart.getCartItemList().stream()
-                .filter(item -> item.getProductId().equals(cartDeleteDTO.getProductId()))
+                .filter(item -> item.getProductId().equals(productId))
                 .findFirst()
-                .orElseThrow(() -> new NotFoundException(cartDeleteDTO.getProductId() + "에 해당되는 상품을 장바구니에서 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException(productId + "에 해당되는 상품을 장바구니에서 찾을 수 없습니다."));
 
         cart.getCartItemList().remove(targetItem);
 
