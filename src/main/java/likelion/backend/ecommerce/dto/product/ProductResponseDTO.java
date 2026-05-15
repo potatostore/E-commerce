@@ -1,6 +1,6 @@
 package likelion.backend.ecommerce.dto.product;
 
-import likelion.backend.ecommerce.entity.Product;
+import likelion.backend.ecommerce.entity.product.Product;
 import likelion.backend.ecommerce.status.ProductStatus;
 import lombok.Getter;
 

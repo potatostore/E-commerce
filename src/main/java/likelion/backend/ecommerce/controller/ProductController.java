@@ -5,11 +5,9 @@ import jakarta.validation.Valid;
 import likelion.backend.ecommerce.dto.product.ProductCreateDTO;
 import likelion.backend.ecommerce.dto.product.ProductResponseDTO;
 import likelion.backend.ecommerce.dto.product.ProductUpdateDTO;
-import likelion.backend.ecommerce.entity.Product;
 import likelion.backend.ecommerce.global.api.ApiResponse;
 import likelion.backend.ecommerce.service.ProductService;
 import lombok.AllArgsConstructor;
-import org.hibernate.engine.spi.Status;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -67,10 +65,10 @@ public class ProductController {
     )
     @PatchMapping("/patch/{id}")
     public ResponseEntity<ApiResponse<ProductResponseDTO>> patchProduct(
-            @PathVariable Long id, @Valid @RequestBody ProductUpdateDTO updateProduct){
+            @PathVariable Long id, @Valid @RequestBody ProductUpdateDTO productUpdateDTO){
         return new ResponseEntity<>(ApiResponse.success(
                 id + "에 해당하는 상품의 정보를 수정하였습니다.",
-                productService.editProductById(id, updateProduct)
+                productService.editProductById(id, productUpdateDTO)
         ), HttpStatus.OK);
     }
 
