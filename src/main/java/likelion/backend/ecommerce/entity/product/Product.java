@@ -1,4 +1,4 @@
-package likelion.backend.ecommerce.entity;
+package likelion.backend.ecommerce.entity.product;
 
 import jakarta.persistence.*;
 import likelion.backend.ecommerce.global.constants.TableNames;
@@ -41,6 +41,13 @@ public class Product {
 
     private Double rating;
     private Integer likes;
+
+    @ElementCollection
+    @CollectionTable(
+            name = "product_reviews",
+            joinColumns = @JoinColumn(name = "product_id")
+    )
+    @Column(nullable = false)
     private List<String> reviews;
 
     @Builder

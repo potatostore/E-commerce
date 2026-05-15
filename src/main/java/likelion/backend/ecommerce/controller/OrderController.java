@@ -1,7 +1,13 @@
 package likelion.backend.ecommerce.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import likelion.backend.ecommerce.entity.Order;
+import jakarta.validation.Valid;
+import likelion.backend.ecommerce.dto.order.OrderCreateDTO;
+import likelion.backend.ecommerce.dto.order.OrderResponseDTO;
+import likelion.backend.ecommerce.entity.order.Order;
+import likelion.backend.ecommerce.global.api.ApiResponse;
+import likelion.backend.ecommerce.service.ProductService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,15 +15,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/orders")
 public class OrderController {
+    private final ProductService productService;
+
     @Operation(
             summary = "주문 생성",
             description = "새로운 주문 생성"
     )
-    @PostMapping
-    public ResponseEntity<Order> postOrder(@RequestBody Order order){
-        return new ResponseEntity<>(HttpStatus.OK);
+    @PostMapping("/post")
+    public ResponseEntity<ApiResponse<OrderResponseDTO>> postOrder(@Valid @RequestBody OrderCreateDTO createOrder){
+        return new ResponseEntity<>(ApiResponse.success(
+                "주문을 성공적으로 생성하였습니다.",
+                OrderService
+        ))
     }
 
     @Operation(
