@@ -1,4 +1,4 @@
-package likelion.backend.ecommerce.service;
+package likelion.backend.ecommerce.service.product;
 
 import jakarta.transaction.Transactional;
 import likelion.backend.ecommerce.dto.product.ProductCreateDTO;

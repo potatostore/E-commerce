@@ -1,6 +1,7 @@
 package likelion.backend.ecommerce.entity.order;
 
 import jakarta.persistence.*;
+import likelion.backend.ecommerce.entity.cart.Cart;
 import likelion.backend.ecommerce.global.constants.TableNames;
 import likelion.backend.ecommerce.status.OrderStatus;
 import lombok.Builder;
@@ -27,28 +28,38 @@ public class Order {
     @Column(nullable = false)
     private Long userId;
 
+    @Column(nullable = false)
+    private Long cartId;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "order_id")
-    private List<OrderItem> orderItemList = new ArrayList<>();
+    private List<OrderItem> orderItemList;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
     @CreatedDate
     @Column(updatable = false)
     private Date orderDate;
 
-    private Integer totalPrice = 0;
+    private Integer totalOrderPrice;
 
     @Builder
-    public Order(Long userId, List<OrderItem> orderItemList, Integer count){
+    public Order(Long userId, Cart cart){
         this.userId = userId;
-        this.orderItemList = (orderItemList != null) ? orderItemList : new ArrayList<>();
+        this.cartId = cart.getCartId();
+        this.orderStatus = OrderStatus.ORDER_UNCHECK;
+        this.orderDate = new Date();
 
-        orderStatus = OrderStatus.ORDER_UNCHECK;
+        this.orderItemList = new ArrayList<>();
+        List<OrderItem> items = cart.getCartItemList().stream().map(OrderItem::new).toList();
+        this.orderItemList.addAll(items);
 
-        this.totalPrice = this.orderItemList.stream()
-                .mapToInt(item -> item.getTotalPrice() != null ? item.getTotalPrice() : 0)
-                .sum();
+        updateTotalOrderPrice();
+    }
+
+    public void updateTotalOrderPrice(){
+        this.totalOrderPrice = this.orderItemList.stream()
+                .mapToInt(OrderItem::getTotalProductPrice).sum();
     }
 }

@@ -19,7 +19,6 @@ import java.util.List;
 @AllArgsConstructor
 public class CartService {
     private final CartRepository cartRepository;
-    private final CartItemService cartItemService;
 
     public CartResponseDTO createCart(CartCreateDTO cartCreateDTO){
         if(cartRepository.existsByUserId(cartCreateDTO.getUserId())){
