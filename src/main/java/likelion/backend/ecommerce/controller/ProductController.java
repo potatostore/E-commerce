@@ -6,7 +6,7 @@ import likelion.backend.ecommerce.dto.product.ProductCreateDTO;
 import likelion.backend.ecommerce.dto.product.ProductResponseDTO;
 import likelion.backend.ecommerce.dto.product.ProductUpdateDTO;
 import likelion.backend.ecommerce.global.api.ApiResponse;
-import likelion.backend.ecommerce.service.ProductService;
+import likelion.backend.ecommerce.service.product.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
