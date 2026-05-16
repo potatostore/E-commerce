@@ -6,4 +6,5 @@ public class TableNames {
     public static final String orderItemTableName = "/order_item";
     public static final String cartTableName = "/cart";
     public static final String cartItemTableName = "/cart_item";
+    public static final String paymentTableName = "/payment";
 }

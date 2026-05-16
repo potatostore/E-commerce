@@ -1,7 +1,8 @@
-package likelion.backend.ecommerce.status;
+package likelion.backend.ecommerce.status.order;
 
 public enum OrderStatus {
-    ORDER_UNCHECK,
+    PAYING,
+    ORDER_PAYED,
     ORDER_CHECKED,
     PREPARING,
     DELIVERING,

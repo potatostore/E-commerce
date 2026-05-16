@@ -2,7 +2,7 @@ package likelion.backend.ecommerce.entity.product;
 
 import jakarta.persistence.*;
 import likelion.backend.ecommerce.global.constants.TableNames;
-import likelion.backend.ecommerce.status.ProductStatus;
+import likelion.backend.ecommerce.status.product.ProductStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

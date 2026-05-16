@@ -1,6 +1,7 @@
 package likelion.backend.ecommerce.entity.cart;
 
 import jakarta.persistence.*;
+import likelion.backend.ecommerce.global.constants.TableNames;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = TableNames.cartTableName)
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

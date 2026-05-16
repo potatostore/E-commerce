@@ -3,7 +3,7 @@ package likelion.backend.ecommerce.entity.order;
 import jakarta.persistence.*;
 import likelion.backend.ecommerce.entity.cart.Cart;
 import likelion.backend.ecommerce.global.constants.TableNames;
-import likelion.backend.ecommerce.status.OrderStatus;
+import likelion.backend.ecommerce.status.order.OrderStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,7 +48,7 @@ public class Order {
     public Order(Long userId, Cart cart){
         this.userId = userId;
         this.cartId = cart.getCartId();
-        this.orderStatus = OrderStatus.ORDER_UNCHECK;
+        this.orderStatus = OrderStatus.PAYING;
         this.orderDate = new Date();
 
         this.orderItemList = new ArrayList<>();
@@ -61,5 +61,9 @@ public class Order {
     public void updateTotalOrderPrice(){
         this.totalOrderPrice = this.orderItemList.stream()
                 .mapToInt(OrderItem::getTotalProductPrice).sum();
+    }
+
+    public void updateOrderState(OrderStatus orderStatus){
+        this.orderStatus = orderStatus;
     }
 }
