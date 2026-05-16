@@ -1,4 +1,4 @@
-package likelion.backend.ecommerce.status;
+package likelion.backend.ecommerce.status.product;
 
 public enum ProductStatus {
     OK,

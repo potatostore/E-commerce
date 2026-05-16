@@ -1,7 +1,7 @@
 package likelion.backend.ecommerce.dto.product;
 
 import likelion.backend.ecommerce.entity.product.Product;
-import likelion.backend.ecommerce.status.ProductStatus;
+import likelion.backend.ecommerce.status.product.ProductStatus;
 import lombok.Getter;
 
 import java.util.List;
