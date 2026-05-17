@@ -51,11 +51,11 @@ public class ProductController {
             summary = "상품 조회",
             description = "상품 ID를 통해 특정 상품 조회"
     )
-    @GetMapping("/get/{id}")
-    public ResponseEntity<ApiResponse<ProductResponseDTO>> getProduct(@PathVariable Long id){
+    @GetMapping("/get/{userId}")
+    public ResponseEntity<ApiResponse<ProductResponseDTO>> getProduct(@PathVariable Long userId){
         return new ResponseEntity<>(ApiResponse.success(
-                id + "에 해당하는 상품을 조회하였습니다.",
-                productService.findProductById(id)
+                userId + "에 해당하는 상품을 조회하였습니다.",
+                productService.findProductById(userId)
         ), HttpStatus.OK);
     }
 
@@ -63,12 +63,12 @@ public class ProductController {
             summary = "상품 수정",
             description = "상품 ID를 통해 특정 상품 정보 수정"
     )
-    @PatchMapping("/patch/{id}")
+    @PatchMapping("/patch/{userId}")
     public ResponseEntity<ApiResponse<ProductResponseDTO>> patchProduct(
-            @PathVariable Long id, @Valid @RequestBody ProductUpdateDTO productUpdateDTO){
+            @PathVariable Long userId, @Valid @RequestBody ProductUpdateDTO productUpdateDTO){
         return new ResponseEntity<>(ApiResponse.success(
-                id + "에 해당하는 상품의 정보를 수정하였습니다.",
-                productService.editProductById(id, productUpdateDTO)
+                userId + "에 해당하는 상품의 정보를 수정하였습니다.",
+                productService.editProductById(userId, productUpdateDTO)
         ), HttpStatus.OK);
     }
 
@@ -76,11 +76,11 @@ public class ProductController {
             summary = "상품 삭제",
             description = "상품 ID를 통해 특정 상품 삭제"
     )
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ApiResponse<ProductResponseDTO>> deleteProduct(@PathVariable Long id){
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<ApiResponse<ProductResponseDTO>> deleteProduct(@PathVariable Long userId){
         return new ResponseEntity<>(ApiResponse.success(
-                id + " : 상품을 삭제하였습니다.",
-                productService.deleteProductById(id)
+                userId + " : 상품을 삭제하였습니다.",
+                productService.deleteProductById(userId)
         ), HttpStatus.OK);
     }
 }
