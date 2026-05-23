@@ -1,6 +1,7 @@
 package likelion.backend.ecommerce.entity.payment;
 
 import jakarta.persistence.*;
+import likelion.backend.ecommerce.entity.BaseEntity;
 import likelion.backend.ecommerce.global.constants.TableNames;
 import likelion.backend.ecommerce.status.payment.PaymentMethod;
 import likelion.backend.ecommerce.status.payment.PaymentStatus;
@@ -13,7 +14,7 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 @Table(name = TableNames.paymentTableName)
-public class Payment {
+public class Payment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;

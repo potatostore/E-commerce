@@ -6,5 +6,5 @@ import lombok.Getter;
 public class CartUpdateDTO {
     private Long productId;
     private Integer curProductPrice;
-    private Integer count;
+    private Integer quantity;
 }

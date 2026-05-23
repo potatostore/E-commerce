@@ -18,7 +18,7 @@ public class OrderItemResponseDTO {
         this.cartItemId = item.getOrderItemId();
         this.productId = item.getProductId();
         this.curProductPrice = item.getCurProductPrice();
-        this.count = item.getCount();
+        this.count = item.getQuantity();
         this.totalPrice = item.getTotalProductPrice();
     }
 }

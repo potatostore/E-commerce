@@ -6,30 +6,34 @@ import likelion.backend.ecommerce.dto.order.OrderResponseDTO;
 import likelion.backend.ecommerce.entity.cart.Cart;
 import likelion.backend.ecommerce.entity.order.Order;
 import likelion.backend.ecommerce.entity.payment.Payment;
+import likelion.backend.ecommerce.entity.product.Product;
 import likelion.backend.ecommerce.global.client.PaymentClient;
+import likelion.backend.ecommerce.global.exception.Errorcode;
 import likelion.backend.ecommerce.global.exception.NotFoundException;
+import likelion.backend.ecommerce.global.exception.OutOfStockException;
 import likelion.backend.ecommerce.repository.Payment.PaymentRepository;
 import likelion.backend.ecommerce.repository.cart.CartRepository;
 import likelion.backend.ecommerce.repository.order.OrderRepository;
+import likelion.backend.ecommerce.repository.product.ProductRepository;
 import likelion.backend.ecommerce.status.payment.PaymentMethod;
-import lombok.AllArgsConstructor;
-import org.hibernate.annotations.NotFound;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
     private final CartRepository cartRepository;
     private final PaymentRepository paymentRepository;
     private final PaymentClient paymentClient;
+    private final ProductRepository productRepository;
 
     @Transactional
     public OrderResponseDTO createOrder(Long userId, OrderCreateDTO orderCreateDTO){
         if(!cartRepository.existsByUserId(userId)){
-            throw new NotFoundException(userId + " : 회원의 장바구니에 아무 상품이 담겨있지 않습니다.");
+            throw new NotFoundException(Errorcode.CART_EMPTY);
         }
 
         Cart cart = cartRepository.findByUserId(userId);
@@ -37,6 +41,26 @@ public class OrderService {
         Order order = Order.builder().userId(userId).cart(cart).build();
 
         Order savedOrder = orderRepository.save(order);
+
+        List<Product> updatedProducts = cart.getCartItemList().stream()
+                .map(cartItem -> {
+                    Product product = productRepository.findById(cartItem.getProductId())
+                            .orElseThrow(() -> new NotFoundException(
+                                    Errorcode.PRODUCT_NOT_FOUND
+                            ));
+
+                    if (product.getQuantity() < cartItem.checkQuantity()) {
+                        throw new OutOfStockException(
+                                Errorcode.PRODUCT_OUT_OF_STOCK
+                        );
+                    }
+
+                    product.updateProductQuantity(-cartItem.getQuantity());
+                    product.updateProductStatus();
+
+                    return product;
+                })
+                .toList();
 
         Payment mockPayment = Payment.builder()
                 .orderId(savedOrder.getOrderId())
@@ -72,22 +96,16 @@ public class OrderService {
         return orderList.stream().map(item -> new OrderResponseDTO(item)).toList();
     }
 
-    public OrderResponseDTO findOrderById(Long userId){
-        if(!orderRepository.existsByUserId(userId)){
-            throw new NotFoundException(userId + " : 회원의 주문정보를 조회할 수 없습니다.");
-        }
-
-        Order order = orderRepository.findByUserId(userId);
+    public OrderResponseDTO findOrderById(Long orderId){
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new NotFoundException(Errorcode.ORDER_NOT_FOUND));
 
         return new OrderResponseDTO(order);
     }
 
-    public OrderResponseDTO deleteOrder(Long userId){
-        if(!orderRepository.existsByUserId(userId)){
-            throw new NotFoundException(userId + " : 회원의 주문정보를 찾을 수 없습니다.");
-        }
-
-        Order order = orderRepository.findByUserId(userId);
+    public OrderResponseDTO deleteOrder(Long orderId){
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new NotFoundException(Errorcode.ORDER_NOT_FOUND));
 
         orderRepository.delete(order);
 
