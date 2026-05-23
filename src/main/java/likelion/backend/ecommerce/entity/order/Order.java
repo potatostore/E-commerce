@@ -1,13 +1,13 @@
 package likelion.backend.ecommerce.entity.order;
 
 import jakarta.persistence.*;
+import likelion.backend.ecommerce.entity.BaseEntity;
 import likelion.backend.ecommerce.entity.cart.Cart;
 import likelion.backend.ecommerce.global.constants.TableNames;
 import likelion.backend.ecommerce.status.order.OrderStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.util.ArrayList;
@@ -16,10 +16,9 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @Table(name = TableNames.orderTableName)
-public class Order {
+public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true)

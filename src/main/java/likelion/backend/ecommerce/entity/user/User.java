@@ -1,4 +1,6 @@
 package likelion.backend.ecommerce.entity.user;
 
-public class User {
+import likelion.backend.ecommerce.entity.BaseEntity;
+
+public class User extends BaseEntity {
 }

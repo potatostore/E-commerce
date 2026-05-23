@@ -6,23 +6,24 @@ import likelion.backend.ecommerce.dto.product.ProductUpdateDTO;
 import likelion.backend.ecommerce.entity.product.Product;
 import likelion.backend.ecommerce.dto.product.ProductResponseDTO;
 import likelion.backend.ecommerce.global.exception.AlreadyExistException;
+import likelion.backend.ecommerce.global.exception.Errorcode;
 import likelion.backend.ecommerce.global.exception.GlobalExceptionHandler;
 import likelion.backend.ecommerce.global.exception.NotFoundException;
 import likelion.backend.ecommerce.repository.product.ProductRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
     private final GlobalExceptionHandler globalExceptionHandler;
 
     public ProductResponseDTO addProduct(ProductCreateDTO productCreateDTO){
         if(productRepository.existsByProductName(productCreateDTO.getProductName())){
-            throw new AlreadyExistException(productCreateDTO.getProductName() + "는 이미 존재하는 상품입니다. 다른 이름으로 시도해 주세요");
+            throw new AlreadyExistException(Errorcode.PRODUCT_ALREADY_EXIST);
         }
 
         Product product = Product.builder()
@@ -42,7 +43,7 @@ public class ProductService {
         List<Product> products = productRepository.findAll();
 
         if(products.isEmpty()){
-            throw new NotFoundException("상품이 존재하지 않습니다.");
+            throw new NotFoundException(Errorcode.PRODUCT_NOT_FOUND);
         }
 
         return products.stream()
@@ -52,7 +53,7 @@ public class ProductService {
 
     public ProductResponseDTO findProductById(Long productId){
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException(productId + " : 해당 상품이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException(Errorcode.PRODUCT_NOT_FOUND));
 
         return new ProductResponseDTO(product);
     }
@@ -60,33 +61,29 @@ public class ProductService {
     @Transactional
     public ProductResponseDTO editProductById(Long productId, ProductUpdateDTO productUpdateDTO){
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException(productId + " : 해당 상품이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException(Errorcode.PRODUCT_NOT_FOUND));
 
-        if(productUpdateDTO.getProductName() != null){
-            product.setProductName(productUpdateDTO.getProductName());
-        }
-        if(productUpdateDTO.getProductImage() != null){
-            product.setProductImage(productUpdateDTO.getProductImage());
-        }
-        if(productUpdateDTO.getDescription() != null){
-            product.setDescription(productUpdateDTO.getDescription());
-        }
-        if(productUpdateDTO.getPrice() != null){
-            product.setPrice(productUpdateDTO.getPrice());
-        }
-        if(productUpdateDTO.getQuantity() != null){
-            product.setQuantity(productUpdateDTO.getQuantity());
-        }
+        product.updateProduct(productUpdateDTO);
 
         return new ProductResponseDTO(product);
     }
 
     public ProductResponseDTO deleteProductById(Long productId){
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException(productId + "에 해당되는 상품을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException(Errorcode.PRODUCT_NOT_FOUND));
 
         productRepository.deleteById(productId);
 
         return new ProductResponseDTO(product);
+    }
+
+    public boolean checkingPossibleToBuy(Long productId, Integer quantity){
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new NotFoundException(Errorcode.PRODUCT_NOT_FOUND));
+
+        if(product.getQuantity() < quantity){
+            return false;
+        }
+        return true;
     }
 }

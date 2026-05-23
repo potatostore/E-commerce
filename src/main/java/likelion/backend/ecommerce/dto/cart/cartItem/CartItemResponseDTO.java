@@ -10,14 +10,14 @@ public class CartItemResponseDTO {
     private Long cartItemId;
     private Long productId;
     private Integer curProductPrice;
-    private Integer count;
+    private Integer quantity;
     private Integer totalPrice;
 
     public CartItemResponseDTO(CartItem item){
         this.cartItemId = item.getCartItemId();
         this.productId = item.getProductId();
         this.curProductPrice = item.getCurProductPrice();
-        this.count = item.getCount();
+        this.quantity = item.getQuantity();
         this.totalPrice = item.getTotalProductPrice();
     }
 }
